@@ -21,10 +21,6 @@ on:
         required: false
         default: "false"
   push:
-    branches:
-      - "dev"
-    paths:
-      - "Makefile"
 env:
   TZ: Asia/Shanghai
 
