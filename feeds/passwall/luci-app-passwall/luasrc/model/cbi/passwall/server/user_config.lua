@@ -1,14 +1,18 @@
-api = require "luci.passwall2.api"
+api = require "luci.passwall.api"
+appname = api.appname
+fs = api.fs
+
 api.set_default_cbi()
 
-m = Map(api.s_config)
+m = Map("passwall_server", translate("User Config"))
 m.redirect = api.url("server")
+api.set_apply_on_parse(m)
 
 if not arg[1] or not m:get(arg[1]) then
 	luci.http.redirect(m.redirect)
 end
 
-s = m:section(NamedSection, arg[1], "user", translate("User Config"))
+s = m:section(NamedSection, arg[1], "user", "")
 s.addremove = false
 s.dynamic = false
 
@@ -17,7 +21,7 @@ o.datatype = "and(uciname,maxlength(24))"
 o.rmempty = false
 function o.validate(self, value, section)
 	local exists = false
-	m:foreach("user", function(s)
+	m.uci:foreach("passwall_server", "user", function(s)
 		if s[".name"] ~= section and s.username == value then
 			exists = true
 			return false
